@@ -27,6 +27,16 @@ func NewServer(name string) iface.IServer {
 	}
 }
 
+func userBlock(conn iface.IConnection, data []byte) {
+	//用户的业务处理逻辑
+	buf := []byte(strings.ToUpper(string(data)))
+	err := conn.Send(buf)
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+
+
 func (s *Server) Start() {
 	add := fmt.Sprintf("%s:%d",s.IP,s.Port)
 	tcpAdd,err := net.ResolveTCPAddr(s.Version,add)
@@ -39,30 +49,22 @@ func (s *Server) Start() {
 		fmt.Println(err)
 		return
 	}
+	var cid uint32
+	cid = 0
+
 	go func() {
 		for {
-			con,err := listent.Accept()
+			// 监听
+			con,err := listent.AcceptTCP()
 			if err != nil {
 				fmt.Println(err)
 				return
 			}
-			go func() {
-				defer con.Close()
-				for {
-					buf := make([]byte, 512)
-					cnt,err := con.Read(buf)
-					if err != nil {
-						return
-					}
-					buf = []byte(strings.ToUpper(string(buf[:cnt])))
-					fmt.Println(string(buf))
-					_,err = con.Write(buf)
-					if err != nil {
-						fmt.Println(err)
-						return
-					}
-				}
-			}()
+			// 使用自己封装的conn
+			MyConn := NewConnection(con,cid,userBlock)
+			cid ++
+			go MyConn.Start()
+
 
 		}
 	}()
