@@ -19,18 +19,14 @@ type Server struct {
 	Router iface.IRouter
 }
 
-func NewServer(name string) iface.IServer {
+func NewServer() iface.IServer {
 	return &Server{
-		IP:      "0.0.0.0",
-		Port:    8888,
-		Name:    name,
-		Version: "tcp4",
+		IP:     MyConfig.IP,
+		Port:    MyConfig.Port,
+		Name:    MyConfig.Name,
+		Version: MyConfig.Version,
 		Router: &Router{},
 	}
-}
-
-func userBlock(request iface.IRequest) {
-
 }
 
 
@@ -55,7 +51,7 @@ func (s *Server) Start() {
 			con,err := listent.AcceptTCP()
 			if err != nil {
 				fmt.Println(err)
-				return
+				continue
 			}
 			// 使用自己封装的conn
 			MyConn := NewConnection(con,cid,s.Router)

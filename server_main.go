@@ -23,7 +23,7 @@ func (r *TestRouter) Handle(req iface.IRequest) {
 	}}
 
 func main() {
-	server := net.NewServer("oMaoyu_Tcp 0.0.1")
+	server := net.NewServer()
 	server.AddRouter(&TestRouter{})
 	server.Server()
 }

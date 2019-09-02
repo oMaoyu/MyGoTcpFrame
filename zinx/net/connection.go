@@ -14,7 +14,7 @@ type Connection struct {
 }
 
 // 实现接口方法  进行多态
-func (c *Connection) Start() {
+func (c *Connection)  Start() {
 	for {
 		buf := make([]byte, 512)
 		end, err := c.conn.Read(buf)
@@ -35,7 +35,7 @@ func (c *Connection) Stop() {
 	}
 	_ = c.conn.Close()
 }
-
+// 往客户端写数据
 func (c *Connection) Send(buf []byte) error {
 	_, err := c.conn.Write(buf)
 	fmt.Println(string(buf))
