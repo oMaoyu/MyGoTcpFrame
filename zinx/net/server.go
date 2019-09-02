@@ -4,7 +4,6 @@ import (
 	"MyTcpFrame/zinx/iface"
 	"fmt"
 	"net"
-	"strings"
 )
 
 type Server struct {
@@ -16,6 +15,8 @@ type Server struct {
 	Name string
 	//版本 tcp4  tcp6
 	Version string
+	//配置路由
+	Router iface.IRouter
 }
 
 func NewServer(name string) iface.IServer {
@@ -24,16 +25,12 @@ func NewServer(name string) iface.IServer {
 		Port:    8888,
 		Name:    name,
 		Version: "tcp4",
+		Router: &Router{},
 	}
 }
 
-func userBlock(conn iface.IConnection, data []byte) {
-	//用户的业务处理逻辑
-	buf := []byte(strings.ToUpper(string(data)))
-	err := conn.Send(buf)
-	if err != nil {
-		fmt.Println(err)
-	}
+func userBlock(request iface.IRequest) {
+
 }
 
 
@@ -61,7 +58,7 @@ func (s *Server) Start() {
 				return
 			}
 			// 使用自己封装的conn
-			MyConn := NewConnection(con,cid,userBlock)
+			MyConn := NewConnection(con,cid,s.Router)
 			cid ++
 			go MyConn.Start()
 
@@ -78,4 +75,7 @@ func (s *Server) Server() {
 	for {
 		;
 	}
+}
+func (s *Server)AddRouter(router iface.IRouter){
+	s.Router = router
 }

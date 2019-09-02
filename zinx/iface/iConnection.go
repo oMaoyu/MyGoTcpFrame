@@ -12,4 +12,4 @@ type IConnection interface {
 
 // 定义一个回调  让用户提供 处理用户指定业务
 
-type IConnBlock func(IConnection,[]byte)
+type IConnBlock func(IRequest)

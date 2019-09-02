@@ -10,22 +10,25 @@ type Connection struct {
 	conn     *net.TCPConn
 	connId   uint32
 	isClosed bool
-	block    iface.IConnBlock
+	router    iface.IRouter
 }
 
 // 实现接口方法  进行多态
 func (c *Connection) Start() {
 	for {
 		buf := make([]byte, 512)
-		_, err := c.conn.Read(buf)
+		end, err := c.conn.Read(buf)
 		if err != nil {
 			return
 		}
-		c.block(c, buf)
+		req := NewRequest(c,buf[:end],uint32(end))
+		c.router.Handle(req)
+		c.router.PostHandle(req)
+		c.router.PreHandle(req)
 	}
 }
 
-//
+// 关闭客户端
 func (c *Connection) Stop() {
 	if !c.isClosed {
 		return
@@ -46,11 +49,12 @@ func (c *Connection) GetConnId() uint32 {
 func (c *Connection) GetTcpConn() *net.TCPConn {
 	return c.conn
 }
-func NewConnection(conn *net.TCPConn, cid uint32, block iface.IConnBlock) iface.IConnection {
+func NewConnection(conn *net.TCPConn, cid uint32, block iface.IRouter) iface.IConnection {
 	return &Connection{
 		conn:     conn,
 		connId:   cid,
 		isClosed: false,
-		block:    block,
+		router:    block,
+
 	}
 }
