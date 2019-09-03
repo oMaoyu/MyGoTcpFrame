@@ -21,23 +21,23 @@ type Server struct {
 
 func NewServer() iface.IServer {
 	return &Server{
-		IP:     MyConfig.IP,
+		IP:      MyConfig.IP,
 		Port:    MyConfig.Port,
 		Name:    MyConfig.Name,
 		Version: MyConfig.Version,
-		Router: &Router{},
+		Router:  &Router{},
+
 	}
 }
 
-
 func (s *Server) Start() {
-	add := fmt.Sprintf("%s:%d",s.IP,s.Port)
-	tcpAdd,err := net.ResolveTCPAddr(s.Version,add)
+	add := fmt.Sprintf("%s:%d", s.IP, s.Port)
+	tcpAdd, err := net.ResolveTCPAddr(s.Version, add)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	listent,err := net.ListenTCP(s.Version,tcpAdd)
+	listent, err := net.ListenTCP(s.Version, tcpAdd)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -48,16 +48,15 @@ func (s *Server) Start() {
 	go func() {
 		for {
 			// 监听
-			con,err := listent.AcceptTCP()
+			con, err := listent.AcceptTCP()
 			if err != nil {
 				fmt.Println(err)
 				continue
 			}
 			// 使用自己封装的conn
-			MyConn := NewConnection(con,cid,s.Router)
-			cid ++
+			MyConn := NewConnection(con, cid, s.Router)
+			cid++
 			go MyConn.Start()
-
 
 		}
 	}()
@@ -72,6 +71,6 @@ func (s *Server) Server() {
 		;
 	}
 }
-func (s *Server)AddRouter(router iface.IRouter){
+func (s *Server) AddRouter(router iface.IRouter) {
 	s.Router = router
 }
