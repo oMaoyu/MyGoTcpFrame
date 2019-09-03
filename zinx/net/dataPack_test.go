@@ -47,6 +47,7 @@ func TestDataDemo(t *testing.T){
 			// 获取消息体
 			data := make([]byte,msg.GetLen())
 			_,err = io.ReadFull(conn,data)
+			msg.SetData(data)
 			fmt.Println("消息体:",string(data))
 		}
 	}()

@@ -13,7 +13,7 @@ type TestRouter struct {
 
 // 继承重写
 func (r *TestRouter) Handle(req iface.IRequest) {
-	data := req.GetData()
+	data := req.GetMsg().GetData()
 	conn := req.GetConn()
 	//用户的业务处理逻辑
 	buf := []byte(strings.ToUpper(string(data)))

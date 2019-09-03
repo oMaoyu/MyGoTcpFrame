@@ -13,6 +13,10 @@ type DataPack struct {
 func NewDp()*DataPack{
 	return &DataPack{}
 }
+func(dp *DataPack)GetHead()int{
+	return 8
+}
+
 // 封
 func (dp *DataPack) Pack(msg iface.IMessage) ([]byte, error) {
 	// 封包首先要制定规则  这里我们的规则就是 给数据拼接为 长度,id,内容

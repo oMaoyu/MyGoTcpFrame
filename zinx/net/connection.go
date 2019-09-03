@@ -3,6 +3,7 @@ package net
 import (
 	"MyTcpFrame/zinx/iface"
 	"fmt"
+	"io"
 	"net"
 )
 
@@ -10,18 +11,38 @@ type Connection struct {
 	conn     *net.TCPConn
 	connId   uint32
 	isClosed bool
-	router    iface.IRouter
+	router   iface.IRouter
 }
 
 // 实现接口方法  进行多态
-func (c *Connection)  Start() {
+func (c *Connection) Start() {
 	for {
-		buf := make([]byte, 512)
-		end, err := c.conn.Read(buf)
+		// 拆包
+		dp := NewDp()
+		// 读取数据头
+		head := make([]byte, dp.GetHead())
+		_, err := io.ReadFull(c.conn, head)
 		if err != nil {
+			fmt.Println(err)
 			return
 		}
-		req := NewRequest(c,buf[:end],uint32(end))
+		msg, err := dp.Unpack(head)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		if msg.GetLen() == 0 {
+			fmt.Println("数据长度为:", msg.GetLen())
+			return
+		}
+		data := make([]byte, msg.GetLen())
+		_, err = io.ReadFull(c.conn, data)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		msg.SetData(data)
+		req := NewRequest(c, msg)
 		c.router.Handle(req)
 		c.router.PostHandle(req)
 		c.router.PreHandle(req)
@@ -35,6 +56,7 @@ func (c *Connection) Stop() {
 	}
 	_ = c.conn.Close()
 }
+
 // 往客户端写数据
 func (c *Connection) Send(buf []byte) error {
 	_, err := c.conn.Write(buf)
@@ -54,7 +76,6 @@ func NewConnection(conn *net.TCPConn, cid uint32, block iface.IRouter) iface.ICo
 		conn:     conn,
 		connId:   cid,
 		isClosed: false,
-		router:    block,
-
+		router:   block,
 	}
 }

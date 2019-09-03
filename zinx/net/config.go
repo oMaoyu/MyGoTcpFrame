@@ -38,12 +38,12 @@ func LoadTomlConf() error {
 	if err != nil {
 		return err
 	}
-	fmt.Println(MyConfig)
+	//fmt.Println(MyConfig)
 	return nil
 }
 
 // 初始化配置
-func init1() {
+func init() {
 	//err := LoadConfig()
 	//if err != nil {
 	//	fmt.Println("配置初始化失败")
