@@ -29,6 +29,12 @@ func main(){
 			fmt.Println(err)
 			continue
 		}
+		msg,err = net2.GetMsg(conn)
+		if err != nil {
+			return
+		}
+		fmt.Println(string(msg.GetData()))
+
 		time.Sleep(1 * time.Second)
 
 	}

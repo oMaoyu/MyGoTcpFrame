@@ -5,12 +5,9 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client_main.go" beforeDir="false" afterPath="$PROJECT_DIR$/client_main.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server_main.go" beforeDir="false" afterPath="$PROJECT_DIR$/server_main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/zinx/iface/iRequest.go" beforeDir="false" afterPath="$PROJECT_DIR$/zinx/iface/iRequest.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/zinx/net/Request.go" beforeDir="false" afterPath="$PROJECT_DIR$/zinx/net/Request.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/zinx/net/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/zinx/net/config.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/zinx/iface/iConnection.go" beforeDir="false" afterPath="$PROJECT_DIR$/zinx/iface/iConnection.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/zinx/net/connection.go" beforeDir="false" afterPath="$PROJECT_DIR$/zinx/net/connection.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/zinx/net/dataPack.go" beforeDir="false" afterPath="$PROJECT_DIR$/zinx/net/dataPack.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/zinx/net/dataPack_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/zinx/net/dataPack_test.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />

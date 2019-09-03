@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"strings"
 )
+
 //具体业务应该由使用框架的人传入
 type TestRouter struct {
 	net.Router
@@ -17,10 +18,11 @@ func (r *TestRouter) Handle(req iface.IRequest) {
 	conn := req.GetConn()
 	//用户的业务处理逻辑
 	buf := []byte(strings.ToUpper(string(data)))
-	err := conn.Send(buf)
+	_,err := conn.Send(buf,200)
 	if err != nil {
 		fmt.Println(err)
-	}}
+	}
+}
 
 func main() {
 	server := net.NewServer()

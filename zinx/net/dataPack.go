@@ -4,16 +4,19 @@ import (
 	"MyTcpFrame/zinx/iface"
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"io"
 )
 
 // 专门用来拆包封包
 type DataPack struct {
 }
+
 // 初始化
-func NewDp()*DataPack{
+func NewDp() *DataPack {
 	return &DataPack{}
 }
-func(dp *DataPack)GetHead()int{
+func (dp *DataPack) GetHead() int {
 	return 8
 }
 
@@ -64,4 +67,34 @@ func (dp *DataPack) Unpack(data []byte) (iface.IMessage, error) {
 		return nil, err
 	}
 	return &msg, nil
+}
+
+// 封装拆包过程
+func GetMsg(r io.Reader) (iface.IMessage, error) {
+	// 拆包
+	dp := NewDp()
+	// 读取数据头
+	head := make([]byte, dp.GetHead())
+	_, err := io.ReadFull(r, head)
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+	msg, err := dp.Unpack(head)
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+	if msg.GetLen() == 0 {
+		fmt.Println("数据长度为:", msg.GetLen())
+		return nil, err
+	}
+	d := make([]byte, msg.GetLen())
+	_, err = io.ReadFull(r, d)
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+	msg.SetData(d)
+	return msg, nil
 }

@@ -3,7 +3,6 @@ package net
 import (
 	"MyTcpFrame/zinx/iface"
 	"fmt"
-	"io"
 	"net"
 )
 
@@ -17,31 +16,10 @@ type Connection struct {
 // 实现接口方法  进行多态
 func (c *Connection) Start() {
 	for {
-		// 拆包
-		dp := NewDp()
-		// 读取数据头
-		head := make([]byte, dp.GetHead())
-		_, err := io.ReadFull(c.conn, head)
+		msg,err := GetMsg(c.conn)
 		if err != nil {
-			fmt.Println(err)
 			return
 		}
-		msg, err := dp.Unpack(head)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-		if msg.GetLen() == 0 {
-			fmt.Println("数据长度为:", msg.GetLen())
-			return
-		}
-		data := make([]byte, msg.GetLen())
-		_, err = io.ReadFull(c.conn, data)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-		msg.SetData(data)
 		req := NewRequest(c, msg)
 		c.router.Handle(req)
 		c.router.PostHandle(req)
@@ -58,10 +36,12 @@ func (c *Connection) Stop() {
 }
 
 // 往客户端写数据
-func (c *Connection) Send(buf []byte) error {
-	_, err := c.conn.Write(buf)
+func (c *Connection) Send(buf []byte,id uint32) (int,error) {
 	fmt.Println(string(buf))
-	return err
+	dp := NewDp()
+	buff ,err := dp.Pack(NewMessage(buf, uint32(len(buf)),id))
+	_, err = c.conn.Write(buff)
+	return 0, err
 }
 
 func (c *Connection) GetConnId() uint32 {
