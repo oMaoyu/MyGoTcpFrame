@@ -16,7 +16,9 @@ type Server struct {
 	//版本 tcp4  tcp6
 	Version string
 	//配置路由
-	Router iface.IRouter
+	//Router iface.IRouter
+	//配置路由群  根据客户端和服务端相同的id去执行对应路由方法
+	Routers *Routers
 }
 
 func NewServer() iface.IServer {
@@ -25,8 +27,8 @@ func NewServer() iface.IServer {
 		Port:    MyConfig.Port,
 		Name:    MyConfig.Name,
 		Version: MyConfig.Version,
-		Router:  &Router{},
-
+		//Router:  &Router{},
+		Routers: NewRouters(),
 	}
 }
 
@@ -54,7 +56,7 @@ func (s *Server) Start() {
 				continue
 			}
 			// 使用自己封装的conn
-			MyConn := NewConnection(con, cid, s.Router)
+			MyConn := NewConnection(con, cid, s.Routers)
 			cid++
 			go MyConn.Start()
 
@@ -71,6 +73,6 @@ func (s *Server) Server() {
 		;
 	}
 }
-func (s *Server) AddRouter(router iface.IRouter) {
-	s.Router = router
+func (s *Server) AddRouter(key uint32,router iface.IRouter) {
+	s.Routers.AddRouter(key,router)
 }

@@ -23,9 +23,23 @@ func (r *TestRouter) Handle(req iface.IRequest) {
 		fmt.Println(err)
 	}
 }
+//=======
+type DemoRouter struct {
+	net.Router
+}
 
+func (r *DemoRouter) Handle(req iface.IRequest) {
+	conn := req.GetConn()
+	//用户的业务处理逻辑
+	buf := []byte("????")
+	_,err := conn.Send(buf,200)
+	if err != nil {
+		fmt.Println(err)
+	}
+}
 func main() {
 	server := net.NewServer()
-	server.AddRouter(&TestRouter{})
+	server.AddRouter(1,&TestRouter{})
+	server.AddRouter(2,&DemoRouter{})
 	server.Server()
 }

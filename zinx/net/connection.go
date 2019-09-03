@@ -10,7 +10,8 @@ type Connection struct {
 	conn     *net.TCPConn
 	connId   uint32
 	isClosed bool
-	router   iface.IRouter
+	//router   iface.IRouter
+	routers *Routers
 }
 
 // 实现接口方法  进行多态
@@ -21,9 +22,7 @@ func (c *Connection) Start() {
 			return
 		}
 		req := NewRequest(c, msg)
-		c.router.Handle(req)
-		c.router.PostHandle(req)
-		c.router.PreHandle(req)
+		c.routers.PreOneRouterFunc(req)
 	}
 }
 
@@ -51,11 +50,11 @@ func (c *Connection) GetConnId() uint32 {
 func (c *Connection) GetTcpConn() *net.TCPConn {
 	return c.conn
 }
-func NewConnection(conn *net.TCPConn, cid uint32, block iface.IRouter) iface.IConnection {
+func NewConnection(conn *net.TCPConn, cid uint32, block *Routers) iface.IConnection {
 	return &Connection{
 		conn:     conn,
 		connId:   cid,
 		isClosed: false,
-		router:   block,
+		routers:   block,
 	}
 }
