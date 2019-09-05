@@ -20,6 +20,7 @@ type Connection struct {
 func (c *Connection) Start() {
 	go c.startRead()
 	go c.startWrite()
+	c.server.ConnStartRun(c)
 }
 
 // 对conn只进行读
@@ -53,6 +54,7 @@ func (c *Connection) Stop() {
 	if !c.isClosed {
 		return
 	}
+	c.server.ConnStopRun(c)
 	c.server.GetConnMan().Remove(int(c.GetConnId()))
 	_ = c.conn.Close()
 	close(c.msgChan)

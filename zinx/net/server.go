@@ -22,8 +22,9 @@ type Server struct {
 
 	ConnMan iface.IConnManager
 	// 连接开始执行函数
-
+	ConnStateFunc func(connection iface.IConnection)
 	// 连接结束执行函数
+	ConnStopFunc func(connection iface.IConnection)
 
 }
 
@@ -95,3 +96,25 @@ func (s *Server) AddRouter(key uint32,router iface.IRouter) {
 func (s *Server)GetConnMan()iface.IConnManager{
 	return s.ConnMan
 }
+// 注册
+func (s *Server)RegisterStart(f func(connection iface.IConnection)){
+	s.ConnStateFunc = f
+}
+func (s *Server)RegisterStop(f func(connection iface.IConnection)) {
+	s.ConnStopFunc = f
+}
+//执行
+func (s *Server)ConnStartRun(connection iface.IConnection){
+	if s.ConnStateFunc == nil {
+		return
+	}
+	s.ConnStateFunc(connection)
+
+}
+func (s *Server)ConnStopRun(connection iface.IConnection){
+	if s.ConnStopFunc == nil {
+		return
+	}
+	s.ConnStopFunc(connection)
+}
+
