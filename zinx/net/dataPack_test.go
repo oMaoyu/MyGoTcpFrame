@@ -73,7 +73,7 @@ func TestDataDemo(t *testing.T){
 			return
 		}
 
-		 conn.Write(append(append(info1, info2...), info3...))
+		_,_ = conn.Write(append(append(info1, info2...), info3...))
 	}()
 
 	time.Sleep(3 *time.Second)

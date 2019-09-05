@@ -39,6 +39,7 @@ func (r *DemoRouter) Handle(req iface.IRequest) {
 }
 func main() {
 	server := net.NewServer()
+	defer server.Stop()
 	server.AddRouter(1,&TestRouter{})
 	server.AddRouter(2,&DemoRouter{})
 	server.Server()

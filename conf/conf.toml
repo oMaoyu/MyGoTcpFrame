@@ -6,3 +6,4 @@ version = "tcp4"
 [worker]
 worker_size = 4
 task_que_size = 10
+conn_all_size = 3

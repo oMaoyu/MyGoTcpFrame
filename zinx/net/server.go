@@ -19,6 +19,12 @@ type Server struct {
 	//Router iface.IRouter
 	//配置路由群  根据客户端和服务端相同的id去执行对应路由方法
 	Routers *Routers
+
+	ConnMan iface.IConnManager
+	// 连接开始执行函数
+
+	// 连接结束执行函数
+
 }
 
 func NewServer() iface.IServer {
@@ -29,6 +35,7 @@ func NewServer() iface.IServer {
 		Version: MyConfig.Version,
 		//Router:  &Router{},
 		Routers: NewRouters(),
+		ConnMan: NewConnManager(),
 	}
 }
 
@@ -56,8 +63,16 @@ func (s *Server) Start() {
 				fmt.Println(err)
 				continue
 			}
+			// 控制最大连接数
+			if s.ConnMan.GetConnCount() >= MyConfig.Worker.ConnSize{
+				_ = con.Close()
+				continue
+			}
+
 			// 使用自己封装的conn
-			MyConn := NewConnection(con, cid, s.Routers)
+			MyConn := NewConnection(con, cid, s.Routers,s)
+			//建立连接时,添加到连接管理器当中
+			s.ConnMan.AddConn(MyConn)
 			cid++
 			go MyConn.Start()
 
@@ -65,7 +80,7 @@ func (s *Server) Start() {
 	}()
 }
 func (s *Server) Stop() {
-
+	s.GetConnMan().ClearConn()
 }
 
 func (s *Server) Server() {
@@ -76,4 +91,7 @@ func (s *Server) Server() {
 }
 func (s *Server) AddRouter(key uint32,router iface.IRouter) {
 	s.Routers.AddRouter(key,router)
+}
+func (s *Server)GetConnMan()iface.IConnManager{
+	return s.ConnMan
 }

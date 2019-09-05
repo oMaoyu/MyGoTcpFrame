@@ -2,13 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="568655c4-d087-48c9-84af-a503f2402e37" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/zinx/iface/iConnManager.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/zinx/net/connManager.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/conf/conf.toml" beforeDir="false" afterPath="$PROJECT_DIR$/conf/conf.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server_main.go" beforeDir="false" afterPath="$PROJECT_DIR$/server_main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/zinx/iface/iConnManager.go" beforeDir="false" afterPath="$PROJECT_DIR$/zinx/iface/iConnManager.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/zinx/iface/iserver.go" beforeDir="false" afterPath="$PROJECT_DIR$/zinx/iface/iserver.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/zinx/net/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/zinx/net/config.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/zinx/net/connManager.go" beforeDir="false" afterPath="$PROJECT_DIR$/zinx/net/connManager.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/zinx/net/connection.go" beforeDir="false" afterPath="$PROJECT_DIR$/zinx/net/connection.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/zinx/net/msgRouters.go" beforeDir="false" afterPath="$PROJECT_DIR$/zinx/net/msgRouters.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/zinx/net/dataPack_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/zinx/net/dataPack_test.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/zinx/net/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/zinx/net/server.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />

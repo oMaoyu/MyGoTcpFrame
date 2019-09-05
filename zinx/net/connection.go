@@ -13,6 +13,7 @@ type Connection struct {
 	//router   iface.IRouter
 	routers *Routers
 	msgChan chan []byte
+	server  iface.IServer
 }
 
 // 实现接口方法  进行多态
@@ -30,9 +31,9 @@ func (c *Connection) startRead() {
 			return
 		}
 		req := NewRequest(c, msg)
-		if MyConfig.Worker.Size > 0{
+		if MyConfig.Worker.Size > 0 {
 			c.routers.SendReqToQueue(req)
-		}else {
+		} else {
 			c.routers.PreOneRouterFunc(req)
 		}
 	}
@@ -52,6 +53,7 @@ func (c *Connection) Stop() {
 	if !c.isClosed {
 		return
 	}
+	c.server.GetConnMan().Remove(int(c.GetConnId()))
 	_ = c.conn.Close()
 	close(c.msgChan)
 	c.isClosed = false
@@ -73,12 +75,13 @@ func (c *Connection) GetConnId() uint32 {
 func (c *Connection) GetTcpConn() *net.TCPConn {
 	return c.conn
 }
-func NewConnection(conn *net.TCPConn, cid uint32, block *Routers) iface.IConnection {
+func NewConnection(conn *net.TCPConn, cid uint32, block *Routers, server iface.IServer) iface.IConnection {
 	return &Connection{
 		conn:     conn,
 		connId:   cid,
 		isClosed: true,
 		routers:  block,
 		msgChan:  make(chan []byte),
+		server:   server,
 	}
 }
