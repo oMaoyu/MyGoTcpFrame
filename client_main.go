@@ -15,7 +15,7 @@ func main(){
 		return
 	}
 	buf := []byte("hi oMaoyu")
-	msg := net2.NewMessage(buf, uint32(len(buf)),2)
+	msg := net2.NewMessage(buf, uint32(len(buf)),1)
 
 	dp := net2.NewDp()
 	buf ,err = dp.Pack(msg)

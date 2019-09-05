@@ -12,12 +12,20 @@ type Connection struct {
 	isClosed bool
 	//router   iface.IRouter
 	routers *Routers
+	msgChan chan []byte
 }
 
 // 实现接口方法  进行多态
 func (c *Connection) Start() {
+	go c.startRead()
+	go c.startWrite()
+}
+
+// 对conn只进行读
+func (c *Connection) startRead() {
+	defer c.Stop()
 	for {
-		msg,err := GetMsg(c.conn)
+		msg, err := GetMsg(c.conn)
 		if err != nil {
 			return
 		}
@@ -26,20 +34,29 @@ func (c *Connection) Start() {
 	}
 }
 
+// 对conn只进行写
+func (c *Connection) startWrite() {
+	for buff := range c.msgChan {
+		_, _ = c.conn.Write(buff)
+	}
+}
+
 // 关闭客户端
 func (c *Connection) Stop() {
+
 	if !c.isClosed {
 		return
 	}
 	_ = c.conn.Close()
+	close(c.msgChan)
 }
 
 // 往客户端写数据
-func (c *Connection) Send(buf []byte,id uint32) (int,error) {
+func (c *Connection) Send(buf []byte, id uint32) (int, error) {
 	fmt.Println(string(buf))
 	dp := NewDp()
-	buff ,err := dp.Pack(NewMessage(buf, uint32(len(buf)),id))
-	_, err = c.conn.Write(buff)
+	buff, err := dp.Pack(NewMessage(buf, uint32(len(buf)), id))
+	c.msgChan <- buff
 	return 0, err
 }
 
@@ -54,7 +71,8 @@ func NewConnection(conn *net.TCPConn, cid uint32, block *Routers) iface.IConnect
 	return &Connection{
 		conn:     conn,
 		connId:   cid,
-		isClosed: false,
-		routers:   block,
+		isClosed: true,
+		routers:  block,
+		msgChan:  make(chan []byte),
 	}
 }
