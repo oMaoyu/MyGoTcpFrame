@@ -30,7 +30,11 @@ func (c *Connection) startRead() {
 			return
 		}
 		req := NewRequest(c, msg)
-		c.routers.PreOneRouterFunc(req)
+		if MyConfig.Worker.Size > 0{
+			c.routers.SendReqToQueue(req)
+		}else {
+			c.routers.PreOneRouterFunc(req)
+		}
 	}
 }
 
@@ -39,6 +43,7 @@ func (c *Connection) startWrite() {
 	for buff := range c.msgChan {
 		_, _ = c.conn.Write(buff)
 	}
+
 }
 
 // 关闭客户端
@@ -49,6 +54,7 @@ func (c *Connection) Stop() {
 	}
 	_ = c.conn.Close()
 	close(c.msgChan)
+	c.isClosed = false
 }
 
 // 往客户端写数据

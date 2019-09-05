@@ -13,8 +13,12 @@ type server struct {
 	IP      string
 	Name    string
 	Version string
+	Worker worker
 }
-
+type worker struct {
+	Size int `toml:"worker_size"`
+	TaskQueSize int `toml:"TaskQueSize"`
+}
 var MyConfig server
 
 // 获取config文件数据

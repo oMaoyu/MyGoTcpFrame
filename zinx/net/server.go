@@ -44,6 +44,7 @@ func (s *Server) Start() {
 		fmt.Println(err)
 		return
 	}
+	s.Routers.StartWorkerPool()
 	var cid uint32
 	cid = 0
 

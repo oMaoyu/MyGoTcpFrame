@@ -1,4 +1,8 @@
+
 ip = "0.0.0.0"
 port =  8888
 name = "oMaoyu_TCP_Zinx-v0.0.1"
 version = "tcp4"
+[worker]
+worker_size = 4
+task_que_size = 10
