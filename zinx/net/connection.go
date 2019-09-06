@@ -4,6 +4,7 @@ import (
 	"MyTcpFrame/zinx/iface"
 	"fmt"
 	"net"
+	"sync"
 )
 
 type Connection struct {
@@ -14,6 +15,10 @@ type Connection struct {
 	routers *Routers
 	msgChan chan []byte
 	server  iface.IServer
+	//自定义连接设置属性
+	properit map[string]interface{}
+	pLock sync.RWMutex
+
 }
 
 // 实现接口方法  进行多态
@@ -77,6 +82,22 @@ func (c *Connection) GetConnId() uint32 {
 func (c *Connection) GetTcpConn() *net.TCPConn {
 	return c.conn
 }
+func (c *Connection) SetProperity(key string, value interface{}) {
+	c.pLock.Lock()
+	defer c.pLock.Unlock()
+	c.properit[key] = value
+}
+func (c *Connection)GetProperity(key string) interface{} {
+	c.pLock.RLock()
+	defer c.pLock.RUnlock()
+	return c.properit[key]
+}
+func (c *Connection)RemoveProperity(key string){
+	c.pLock.Lock()
+	defer c.pLock.Unlock()
+	delete(c.properit, key)
+}
+
 func NewConnection(conn *net.TCPConn, cid uint32, block *Routers, server iface.IServer) iface.IConnection {
 	return &Connection{
 		conn:     conn,
@@ -85,5 +106,6 @@ func NewConnection(conn *net.TCPConn, cid uint32, block *Routers, server iface.I
 		routers:  block,
 		msgChan:  make(chan []byte),
 		server:   server,
+		properit:make(map[string]interface{}),
 	}
 }
